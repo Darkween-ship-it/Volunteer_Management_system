@@ -3,6 +3,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(express.static('public'));
 
 let events =[];
 
@@ -14,14 +15,17 @@ app.post('/api/events',(req, res) =>{
     const {title, date, location, description} = req.body;
 
     if (!title || !date) {
-        res.status(400).json({ error: "Title and date are recquired!"})
+        return res.status(400).json({ error: "Title and date are required!" });
     }
 
-    const newEvents = {
-        id: events.lenght + 1,
-        title: title,
-        date: date,
-        location: location || "TBD" , description ||
-    }
-}
-)
+    const newEvent = {
+        id: events.length + 1,
+        title,
+        date,
+        location: location || "TBD",
+        description: description || ""
+    };
+
+    events.push(newEvent);
+    res.status(201).json(newEvent);
+});
