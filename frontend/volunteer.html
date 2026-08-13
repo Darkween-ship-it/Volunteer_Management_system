@@ -7,67 +7,121 @@
     <link rel="stylesheet" href="volunteer.css">
 </head>
 <body>
-    <header class="navbar">
-        <div class="nav-inner">
-            <a href="index.html" class="brand">
-                <img src="1786536032116.jpg" alt="VolunteerHub logo" class="brand-logo">
-                Volunteer<span>Hub</span>
-            </a>
-            <div class="nav-right">
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <a href="index.html" class="brand">
+                    <img src="1786536032116.jpg" alt="VolunteerHub logo" class="brand-logo">
+                    Volunteer<span class="red">Hub</span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-view="dashboard">Dashboard</button>
+                <button class="nav-item" data-view="events">Available Events</button>
+                <button class="nav-item" data-view="mine">My Events</button>
+                <button class="nav-item" data-view="profile">My Profile</button>
+            </nav>
+            <button class="logout" onclick="logout()">Logout</button>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <h1 id="page-title">Dashboard</h1>
                 <span id="nav-greeting" class="greeting"></span>
-                <button class="btn btn-sm btn-logout" onclick="logout()">Logout</button>
-            </div>
-        </div>
-    </header>
+            </header>
 
-    <main class="container">
-        <div id="pending-banner" class="banner hidden">
-            <p>Your application is <strong>pending admin approval</strong>. Once approved, you can apply to events.</p>
-        </div>
+            <div id="pending-banner" class="banner hidden">
+                <p>Your application is <strong>pending admin approval</strong>. Once approved, you can apply to events.</p>
+            </div>
 
-        <nav class="tabs">
-            <button class="tab active" data-view="profile">My Profile</button>
-            <button class="tab" data-view="events">Available Events</button>
-            <button class="tab" data-view="mine">My Events</button>
-        </nav>
+            <section id="view-dashboard" class="view active">
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3 id="stat-status" class="capitalize">—</h3>
+                        <p>Application status</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-events">0</h3>
+                        <p>Events joined</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-participation">0</h3>
+                        <p>Participation records</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-present">0</h3>
+                        <p>Present so far</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Upcoming Events</h2>
+                    <div id="dashboard-events"><p class="muted">Loading...</p></div>
+                </div>
+                <div class="card">
+                    <h2>Latest Participation</h2>
+                    <div id="dashboard-participation"><p class="muted">Loading...</p></div>
+                </div>
+            </section>
 
-        <section id="view-profile" class="view active">
-            <div class="card">
-                <h2>My Profile</h2>
-                <div id="profile-info"></div>
-            </div>
-            <div class="card">
-                <h2>Edit Profile</h2>
-                <form id="profile-form" class="profile-form">
-                    <label>Full name</label>
-                    <input id="p-name" type="text" required>
-                    <label>Skills (comma separated)</label>
-                    <input id="p-skills" type="text" placeholder="e.g. cooking, first aid">
-                    <label>New password (leave blank to keep current)</label>
-                    <input id="p-password" type="password">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </div>
-        </section>
+            <section id="view-events" class="view">
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Available Events</h2>
+                    </div>
+                    <div id="events-grid" class="grid"></div>
+                </div>
+            </section>
 
-        <section id="view-events" class="view">
-            <div class="card">
-                <h2>Available Events</h2>
-                <div id="events-grid" class="grid"></div>
-            </div>
-        </section>
+            <section id="view-mine" class="view">
+                <div class="card">
+                    <h2>My Events</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="my-events"></tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <h2>My Participation</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Status</th>
+                                <th>Recorded</th>
+                            </tr>
+                        </thead>
+                        <tbody id="my-participation"></tbody>
+                    </table>
+                </div>
+            </section>
 
-        <section id="view-mine" class="view">
-            <div class="card">
-                <h2>My Events</h2>
-                <div id="my-events"></div>
-            </div>
-            <div class="card">
-                <h2>My Participation</h2>
-                <div id="my-participation"></div>
-            </div>
-        </section>
-    </main>
+            <section id="view-profile" class="view">
+                <div class="card">
+                    <h2>My Profile</h2>
+                    <div id="profile-info"></div>
+                </div>
+                <div class="card">
+                    <h2>Edit Profile</h2>
+                    <form id="profile-form" class="profile-form">
+                        <label>Full name</label>
+                        <input id="p-name" type="text" required>
+                        <label>Skills (comma separated)</label>
+                        <input id="p-skills" type="text" placeholder="e.g. cooking, first aid">
+                        <label>New password (leave blank to keep current)</label>
+                        <input id="p-password" type="password">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
 
     <div id="toast" class="toast hidden"></div>
 

@@ -50,14 +50,32 @@ function logout() {
     window.location.href = 'index.html';
 }
 
-document.querySelectorAll('.tab').forEach((tab) => {
-    tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
-        tab.classList.add('active');
+const navItems = document.querySelectorAll('.nav-item');
+const titles = {
+    dashboard: 'Dashboard',
+    events: 'Available Events',
+    mine: 'My Events',
+    profile: 'My Profile',
+};
+
+navItems.forEach((item) => {
+    item.addEventListener('click', () => {
+        navItems.forEach((n) => n.classList.remove('active'));
+        item.classList.add('active');
+        const view = item.dataset.view;
         document.querySelectorAll('.view').forEach((v) => v.classList.remove('active'));
-        document.getElementById(`view-${tab.dataset.view}`).classList.add('active');
+        document.getElementById(`view-${view}`).classList.add('active');
+        document.getElementById('page-title').textContent = titles[view];
+        loadView(view);
     });
 });
+
+function loadView(view) {
+    if (view === 'dashboard') loadDashboard();
+    if (view === 'events') renderEvents();
+    if (view === 'mine') renderMyEvents();
+    if (view === 'profile') renderProfile();
+}
 
 async function init() {
     const id = localStorage.getItem(VOLUNTEER_KEY);
@@ -71,12 +89,79 @@ async function init() {
         if (volunteer.status !== 'approved') {
             document.getElementById('pending-banner').classList.remove('hidden');
         }
-        renderProfile();
-        renderEvents();
-        renderMyEvents();
+        loadView('dashboard');
     } catch (err) {
         toast(err.message, true);
     }
+}
+
+async function loadDashboard() {
+    try {
+        const [events, participations] = await Promise.all([
+            api.get('/api/events'),
+            api.get('/api/participations'),
+        ]);
+        const myEvents = events.filter(
+            (e) => (e.participants || []).some((p) => p.volunteerId === volunteer.id)
+        );
+        const myParticipation = participations.filter((r) => r.volunteerId === volunteer.id);
+
+        const statusEl = document.getElementById('stat-status');
+        statusEl.textContent = volunteer.status;
+        statusEl.classList.add(`stat-${volunteer.status}`);
+        document.getElementById('stat-events').textContent = myEvents.length;
+        document.getElementById('stat-participation').textContent = myParticipation.length;
+        document.getElementById('stat-present').textContent =
+            myParticipation.filter((r) => r.status === 'present').length;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const upcoming = events
+            .filter((e) => new Date(e.date).getTime() >= today.getTime())
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
+            .slice(0, 5);
+
+        const upBox = document.getElementById('dashboard-events');
+        if (!upcoming.length) {
+            upBox.innerHTML = '<p class="muted">No upcoming events.</p>';
+        } else {
+            upBox.innerHTML = upcoming.map((e) => {
+                const joined = myEvents.some((m) => m.id === e.id);
+                return `
+                    <div class="list-item">
+                        <div class="info">
+                            <h4>${escapeHtml(e.title)}</h4>
+                            <p>${escapeHtml(e.date)} · ${escapeHtml(e.location)}</p>
+                        </div>
+                        <span class="badge ${joined ? 'badge-approved' : 'badge-open'}">${joined ? 'Joined' : 'Open'}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        const partBox = document.getElementById('dashboard-participation');
+        if (!myParticipation.length) {
+            partBox.innerHTML = '<p class="muted">No participation records yet.</p>';
+        } else {
+            partBox.innerHTML = myParticipation.slice(0, 5).map((r) => `
+                <div class="list-item">
+                    <div class="info">
+                        <h4>${escapeHtml(r.eventTitle)}</h4>
+                        <p>${new Date(r.date).toLocaleString()}</p>
+                    </div>
+                    <span class="badge ${statusBadge(r.status)}">${escapeHtml(r.status)}</span>
+                </div>
+            `).join('');
+        }
+    } catch (err) {
+        toast(err.message, true);
+    }
+}
+
+function statusBadge(status) {
+    if (status === 'present') return 'badge-approved';
+    if (status === 'late') return 'badge-pending';
+    return 'badge-rejected';
 }
 
 function renderProfile() {
@@ -128,11 +213,13 @@ async function renderEvents() {
             grid.innerHTML = '<p class="muted">No events available yet.</p>';
             return;
         }
-        const myEvents = events.filter(
-            (e) => (e.participants || []).some((p) => p.volunteerId === volunteer.id)
+        const myEventIds = new Set(
+            events
+                .filter((e) => (e.participants || []).some((p) => p.volunteerId === volunteer.id))
+                .map((e) => e.id)
         );
         grid.innerHTML = events.map((e) => {
-            const applied = myEvents.some((m) => m.id === e.id);
+            const applied = myEventIds.has(e.id);
             const disabled = volunteer.status !== 'approved';
             return `
                 <div class="event-card">
@@ -142,7 +229,7 @@ async function renderEvents() {
                     <p class="meta">${(e.participants || []).length} volunteer(s) registered</p>
                     <div class="actions">
                         ${applied
-                            ? '<span class="applied">Applied</span>'
+                            ? '<span class="badge badge-approved">Applied</span>'
                             : `<button class="btn btn-primary" ${disabled ? 'disabled' : ''} onclick="applyToEvent(${e.id})">Apply to participate</button>`}
                     </div>
                 </div>
@@ -166,7 +253,7 @@ async function applyToEvent(eventId) {
 
 async function renderMyEvents() {
     const box = document.getElementById('my-events');
-    const attBox = document.getElementById('my-participation');
+    const partTbody = document.getElementById('my-participation');
     try {
         const [events, participations] = await Promise.all([
             api.get('/api/events'),
@@ -177,30 +264,27 @@ async function renderMyEvents() {
         );
         box.innerHTML = myEvents.length
             ? myEvents.map((e) => `
-                <div class="list-item">
-                    <div class="info">
-                        <h4>${escapeHtml(e.title)}</h4>
-                        <p>${escapeHtml(e.date)} · ${escapeHtml(e.location)}</p>
-                    </div>
-                    <span class="applied">Registered</span>
-                </div>
+                <tr>
+                    <td>${escapeHtml(e.title)}</td>
+                    <td>${escapeHtml(e.date)}</td>
+                    <td>${escapeHtml(e.location)}</td>
+                    <td><span class="badge badge-approved">Registered</span></td>
+                </tr>
               `).join('')
-            : '<p class="muted">You have not applied to any events yet.</p>';
+            : '<tr><td colspan="4" class="muted">You have not applied to any events yet. Browse Available Events.</td></tr>';
 
         const myParticipation = participations.filter((r) => r.volunteerId === volunteer.id);
-        attBox.innerHTML = myParticipation.length
+        partTbody.innerHTML = myParticipation.length
             ? myParticipation.map((r) => `
-                <div class="list-item">
-                    <div class="info">
-                        <h4>${escapeHtml(r.eventTitle)}</h4>
-                        <p>${new Date(r.date).toLocaleString()}</p>
-                    </div>
-                    <span class="badge badge-${r.status === 'present' ? 'approved' : r.status === 'late' ? 'pending' : 'rejected'}">${escapeHtml(r.status)}</span>
-                </div>
+                <tr>
+                    <td>${escapeHtml(r.eventTitle)}</td>
+                    <td><span class="badge ${statusBadge(r.status)}">${escapeHtml(r.status)}</span></td>
+                    <td>${new Date(r.date).toLocaleString()}</td>
+                </tr>
               `).join('')
-            : '<p class="muted">No participation records yet.</p>';
+            : '<tr><td colspan="3" class="muted">No participation records yet.</td></tr>';
     } catch (err) {
-        box.innerHTML = `<p class="muted">${escapeHtml(err.message)}</p>`;
+        box.innerHTML = `<tr><td colspan="4" class="muted">${escapeHtml(err.message)}</td></tr>`;
     }
 }
 
