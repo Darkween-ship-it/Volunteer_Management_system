@@ -10,6 +10,8 @@ app.use('/api/volunteers', require('./routes/volunteerRoutes'));
 
 app.use('/api/participations', require('./routes/participationRoutes'));
 
+app.use('/api/events', require('./routes/eventRoutes'));
+
 
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Route not found' });

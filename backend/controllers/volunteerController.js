@@ -30,6 +30,7 @@ function createVolunteer(req, res) {
     password,
     skills: skills || [],
     createdAt: new Date().toISOString(),
+    status: 'pending',
   };
   volunteers.push(newVolunteer);
   writeData(FILE, volunteers);
