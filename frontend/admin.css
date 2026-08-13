@@ -154,22 +154,23 @@ body {
 
 .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
     margin-bottom: 24px;
+    max-width: 640px;
 }
 
 .stat-card {
     background: #161a1f;
     border: 1px solid #262c34;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 10px;
+    padding: 14px 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
 
 .stat-card h3 {
-    font-size: 32px;
+    font-size: 22px;
     color: #f1f5f9;
 }
 

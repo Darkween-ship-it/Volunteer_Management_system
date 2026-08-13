@@ -1,1 +1,33 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "M Djot",
+    "email": "hafidatchiegmou@gmail.com",
+    "password": "demos",
+    "skills": [
+      "Good at talking bla bla bla"
+    ],
+    "createdAt": "2026-08-13T01:46:40.899Z",
+    "status": "approved"
+  },
+  {
+    "id": 2,
+    "name": "elena",
+    "email": "elenalyn@gmail.com",
+    "password": "diso",
+    "skills": "",
+    "profilePicture": "/uploads/1786589425515-426194274.jpg",
+    "createdAt": "2026-08-13T02:33:38.680Z",
+    "status": "approved"
+  },
+  {
+    "id": 3,
+    "name": "eliot",
+    "email": "eliotangel@gnail.com",
+    "password": "set",
+    "skills": [],
+    "profilePicture": null,
+    "createdAt": "2026-08-13T09:36:17.356Z",
+    "status": "rejected"
+  }
+]

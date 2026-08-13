@@ -170,9 +170,12 @@ function statusBadge(status) {
 }
 
 function renderProfile() {
+    const avatarHtml = volunteer.profilePicture
+        ? `<img class="avatar" src="${escapeHtml(volunteer.profilePicture)}" alt="">`
+        : '<span class="muted">No photo yet.</span>';
     document.getElementById('profile-info').innerHTML = `
         <div class="list-item">
-            <div class="info"><h4>Photo</h4><img class="avatar" src="${volunteer.profilePicture || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23ccc%22/%3E%3Ctext x=%2232%22 y=%2240%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22%23fff%22%3E${escapeHtml((volunteer.name || '?')[0].toUpperCase())}%3C/text%3E%3C/svg%3E'}" alt=""></div>
+            <div class="info"><h4>Photo</h4>${avatarHtml}</div>
         </div>
         <div class="list-item">
             <div class="info"><h4>Name</h4><p>${escapeHtml(volunteer.name)}</p></div>
@@ -190,9 +193,7 @@ function renderProfile() {
             <div class="info"><h4>Applied</h4><p>${new Date(volunteer.createdAt).toLocaleDateString()}</p></div>
         </div>
     `;
-    document.getElementById('profile-picture-preview').innerHTML = volunteer.profilePicture
-        ? `<img class="avatar" src="${escapeHtml(volunteer.profilePicture)}" alt="">`
-        : '<span class="muted">No photo yet.</span>';
+    document.getElementById('profile-picture-preview').innerHTML = avatarHtml;
     document.getElementById('p-name').value = volunteer.name;
     document.getElementById('p-skills').value = (volunteer.skills || []).join(', ');
 }
@@ -240,16 +241,17 @@ async function renderEvents() {
             const applied = myEventIds.has(e.id);
             const disabled = volunteer.status !== 'approved';
             return `
-                <div class="event-card">
-                    ${e.image ? `<img class="event-img" src="${escapeHtml(e.image)}" alt="">` : ''}
-                    <h3>${escapeHtml(e.title)}</h3>
-                    <p class="meta">${escapeHtml(e.date)} · ${escapeHtml(e.location)}</p>
-                    ${e.description ? `<p class="desc">${escapeHtml(e.description)}</p>` : ''}
-                    <p class="meta">${(e.participants || []).length} volunteer(s) registered</p>
-                    <div class="actions">
-                        ${applied
-                            ? '<span class="badge badge-approved">Applied</span>'
-                            : `<button class="btn btn-primary" ${disabled ? 'disabled' : ''} onclick="applyToEvent(${e.id})">Apply to participate</button>`}
+                <div class="event-banner">
+                    ${e.image ? `<div class="event-banner-bg" style="background-image:url('${escapeHtml(e.image)}')"></div>` : ''}
+                    <div class="event-banner-content">
+                        <h3>${escapeHtml(e.title)}</h3>
+                        <p class="event-banner-meta">${escapeHtml(e.date)} · ${escapeHtml(e.location)} · ${(e.participants || []).length} volunteer(s)</p>
+                        ${e.description ? `<p class="event-banner-desc">${escapeHtml(e.description)}</p>` : ''}
+                        <div class="event-banner-actions">
+                            ${applied
+                                ? '<span class="badge badge-approved">Applied</span>'
+                                : `<button class="btn btn-primary btn-sm" ${disabled ? 'disabled' : ''} onclick="applyToEvent(${e.id})">Apply to participate</button>`}
+                        </div>
                     </div>
                 </div>
             `;
