@@ -6,16 +6,17 @@
 
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    color: #2d3748;
+    color: #e2e8f0;
     line-height: 1.6;
+    background: #111418;
 }
 
 .navbar {
     position: fixed;
     top: 0;
     width: 100%;
-    background: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: #161a1f;
+    border-bottom: 1px solid #262c34;
     z-index: 100;
 }
 
@@ -34,7 +35,7 @@ body {
     gap: 10px;
     font-size: 22px;
     font-weight: 700;
-    color: #2b6cb0;
+    color: #f1f5f9;
     text-decoration: none;
 }
 
@@ -46,18 +47,19 @@ body {
 }
 
 .brand span {
-    color: #e53e3e;
+    color: #64748b;
 }
 
 nav a {
     margin-left: 24px;
     text-decoration: none;
-    color: #4a5568;
+    color: #94a3b8;
     font-weight: 500;
+    transition: color 0.2s;
 }
 
 nav a:hover {
-    color: #2b6cb0;
+    color: #f1f5f9;
 }
 
 .hero {
@@ -74,22 +76,12 @@ nav a:hover {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(23, 25, 35, 0.55);
-}
-
-.hero-logo {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 20px;
-    border: 4px solid rgba(255, 255, 255, 0.85);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    background: rgba(17, 20, 24, 0.78);
 }
 
 .hero-content {
     position: relative;
-    color: #ffffff;
+    color: #f1f5f9;
     max-width: 700px;
 }
 
@@ -102,7 +94,7 @@ nav a:hover {
 .hero-content p {
     font-size: 18px;
     margin-bottom: 28px;
-    opacity: 0.92;
+    color: #cbd5e1;
 }
 
 .btn {
@@ -118,17 +110,29 @@ nav a:hover {
 }
 
 .btn-primary {
-    background: #2b6cb0;
+    background: #2f6fed;
     color: #ffffff;
 }
 
 .btn-primary:hover {
-    background: #2c5282;
+    background: #2454c4;
 }
 
 .btn-block {
     width: 100%;
     margin-top: 8px;
+}
+
+.btn-outline {
+    margin-left: 12px;
+    background: transparent;
+    border: 1px solid #475569;
+    color: #cbd5e1;
+}
+
+.btn-outline:hover {
+    background: #1e242c;
+    color: #f1f5f9;
 }
 
 .about {
@@ -144,17 +148,19 @@ nav a:hover {
 .about-image img {
     width: 100%;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border: 1px solid #262c34;
 }
 
 .about-text h2 {
     font-size: 32px;
     margin-bottom: 16px;
-    color: #1a202c;
+    color: #f1f5f9;
 }
 
 .about-text p {
     margin-bottom: 16px;
+    color: #94a3b8;
 }
 
 .stats {
@@ -164,24 +170,26 @@ nav a:hover {
 }
 
 .stat h3 {
-    color: #2b6cb0;
+    color: #2f6fed;
     font-size: 20px;
 }
 
 .auth {
-    background: #f7fafc;
+    background: #161a1f;
     padding: 80px 20px;
     text-align: center;
+    border-top: 1px solid #262c34;
 }
 
 .auth h2 {
     font-size: 32px;
     margin-bottom: 8px;
+    color: #f1f5f9;
 }
 
 .auth > p {
     margin-bottom: 32px;
-    color: #4a5568;
+    color: #94a3b8;
 }
 
 .role-tabs {
@@ -193,8 +201,9 @@ nav a:hover {
 
 .tab {
     padding: 10px 28px;
-    border: 2px solid #cbd5e0;
-    background: #ffffff;
+    border: 1px solid #334155;
+    background: #1c2127;
+    color: #94a3b8;
     border-radius: 999px;
     font-size: 15px;
     font-weight: 600;
@@ -203,8 +212,8 @@ nav a:hover {
 }
 
 .tab.active {
-    background: #2b6cb0;
-    border-color: #2b6cb0;
+    background: #2f6fed;
+    border-color: #2f6fed;
     color: #ffffff;
 }
 
@@ -212,19 +221,37 @@ nav a:hover {
     display: none;
     max-width: 420px;
     margin: 0 auto;
-    background: #ffffff;
+    background: #1c2127;
+    border: 1px solid #2a313a;
     padding: 32px;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .form-panel.active {
     display: block;
 }
 
+.form-msg {
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: #12271b;
+    border: 1px solid #1f4d31;
+    color: #4ade80;
+    margin-bottom: 14px;
+}
+
+.form-msg.error {
+    background: #2a1b1e;
+    border-color: #5b232b;
+    color: #fca5a5;
+}
+
 .form-toggle {
     display: flex;
-    background: #edf2f7;
+    background: #13161b;
+    border: 1px solid #2a313a;
     border-radius: 8px;
     padding: 4px;
     margin-bottom: 24px;
@@ -238,27 +265,34 @@ nav a:hover {
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    color: #4a5568;
+    color: #94a3b8;
+    transition: all 0.2s;
 }
 
 .form-btn.active {
-    background: #ffffff;
-    color: #2b6cb0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    background: #2f6fed;
+    color: #ffffff;
 }
 
 .auth-form input {
     width: 100%;
     padding: 12px 14px;
     margin-bottom: 14px;
-    border: 1px solid #cbd5e0;
+    border: 1px solid #334155;
     border-radius: 6px;
     font-size: 15px;
+    background: #13161b;
+    color: #e2e8f0;
+    transition: border-color 0.2s;
+}
+
+.auth-form input::placeholder {
+    color: #64748b;
 }
 
 .auth-form input:focus {
     outline: none;
-    border-color: #2b6cb0;
+    border-color: #2f6fed;
 }
 
 .hidden {
@@ -266,11 +300,12 @@ nav a:hover {
 }
 
 .footer {
-    background: #1a202c;
-    color: #a0aec0;
+    background: #0f1115;
+    color: #64748b;
     text-align: center;
     padding: 24px;
     font-size: 14px;
+    border-top: 1px solid #262c34;
 }
 
 @media (max-width: 768px) {

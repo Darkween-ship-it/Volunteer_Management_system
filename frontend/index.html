@@ -17,6 +17,7 @@
                 <a href="#hero">Home</a>
                 <a href="#about">About</a>
                 <a href="#auth">Get Started</a>
+                <a href="admin.html">Admin</a>
             </nav>
         </div>
     </header>
@@ -27,6 +28,7 @@
             <h1>Organize Volunteers. <br>Power Your Community.</h1>
             <p>One platform to manage volunteers, events, and participation — so your organization can focus on making an impact.</p>
             <a href="#auth" class="btn btn-primary">Get Started</a>
+            <a href="#auth" class="btn btn-outline" onclick="applyAsVolunteer()">Apply as a Volunteer</a>
         </div>
     </section>
 
@@ -66,6 +68,7 @@
                     <button class="form-btn active" data-mode="signin">Sign In</button>
                     <button class="form-btn" data-mode="signup">Sign Up</button>
                 </div>
+                <p id="volunteer-msg" class="form-msg"></p>
                 <form id="volunteer-signin" class="auth-form">
                     <input type="email" placeholder="Email address" required>
                     <input type="password" placeholder="Password" required>
@@ -74,8 +77,8 @@
                 <form id="volunteer-signup" class="auth-form hidden">
                     <input type="text" placeholder="Full name" required>
                     <input type="email" placeholder="Email address" required>
-                    <input type="password" placeholder="Password" required>
-                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    <input type="password" placeholder="Set a password" required>
+                    <button type="submit" class="btn btn-primary btn-block">Apply to Volunteer</button>
                 </form>
             </div>
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer — VolunteerHub</title>
+    <link rel="stylesheet" href="volunteer.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="brand">
+                <img src="1786536032116.jpg" alt="VolunteerHub logo" class="brand-logo">
+                Volunteer<span>Hub</span>
+            </a>
+            <div class="nav-right">
+                <span id="nav-greeting" class="greeting"></span>
+                <button class="btn btn-sm btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="pending-banner" class="banner hidden">
+            <p>Your application is <strong>pending admin approval</strong>. Once approved, you can apply to events.</p>
+        </div>
+
+        <nav class="tabs">
+            <button class="tab active" data-view="profile">My Profile</button>
+            <button class="tab" data-view="events">Available Events</button>
+            <button class="tab" data-view="mine">My Events</button>
+        </nav>
+
+        <section id="view-profile" class="view active">
+            <div class="card">
+                <h2>My Profile</h2>
+                <div id="profile-info"></div>
+            </div>
+            <div class="card">
+                <h2>Edit Profile</h2>
+                <form id="profile-form" class="profile-form">
+                    <label>Full name</label>
+                    <input id="p-name" type="text" required>
+                    <label>Skills (comma separated)</label>
+                    <input id="p-skills" type="text" placeholder="e.g. cooking, first aid">
+                    <label>New password (leave blank to keep current)</label>
+                    <input id="p-password" type="password">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="view-events" class="view">
+            <div class="card">
+                <h2>Available Events</h2>
+                <div id="events-grid" class="grid"></div>
+            </div>
+        </section>
+
+        <section id="view-mine" class="view">
+            <div class="card">
+                <h2>My Events</h2>
+                <div id="my-events"></div>
+            </div>
+            <div class="card">
+                <h2>My Participation</h2>
+                <div id="my-participation"></div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="volunteer.js"></script>
+</body>
+</html>

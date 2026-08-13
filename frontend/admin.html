@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — VolunteerHub</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <a href="index.html" class="brand">
+                    <img src="1786536032116.jpg" alt="VolunteerHub logo" class="brand-logo">
+                    <span>Volunteer<span class="red">Hub</span></span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-view="dashboard">Dashboard</button>
+                <button class="nav-item" data-view="volunteers">Volunteers</button>
+                <button class="nav-item" data-view="events">Events</button>
+                <button class="nav-item" data-view="participation">Participation</button>
+            </nav>
+            <a href="index.html" class="logout">← Back to site</a>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <h1 id="page-title">Dashboard</h1>
+                <button id="action-btn" class="btn btn-primary" style="display:none">New</button>
+            </header>
+
+            <section id="view-dashboard" class="view active">
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3 id="stat-volunteers">0</h3>
+                        <p>Volunteers</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-events">0</h3>
+                        <p>Events</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-participation">0</h3>
+                        <p>Participation records</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="stat-participants">0</h3>
+                        <p>Total registrations</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Recent Events</h2>
+                    <div id="dashboard-events"><p class="muted">Loading...</p></div>
+                </div>
+            </section>
+
+            <section id="view-volunteers" class="view">
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Volunteers</h2>
+                        <button class="btn btn-primary" onclick="openVolunteerModal()">+ Add Volunteer</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Skills</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="volunteers-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-events" class="view">
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Events</h2>
+                        <button class="btn btn-primary" onclick="openEventModal()">+ Create Event</button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Participants</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="events-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="view-participation" class="view">
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Record Participation</h2>
+                    </div>
+                    <form class="inline-form" id="participation-form">
+                        <select id="part-event" required></select>
+                        <select id="part-volunteer" required></select>
+                        <select id="part-status" required>
+                            <option value="present">Present</option>
+                            <option value="absent">Absent</option>
+                            <option value="late">Late</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Mark</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <div class="card-head">
+                        <h2>Participation Records</h2>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Event</th>
+                                <th>Volunteer</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="participation-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal" class="modal hidden">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3 id="modal-title">Title</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
