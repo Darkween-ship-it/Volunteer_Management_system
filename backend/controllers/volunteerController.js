@@ -18,7 +18,7 @@ function getVolunteerById(req, res) {
 }
 
 function createVolunteer(req, res) {
-  const { name, email, skills } = req.body;
+  const { name, email, skills, password } = req.body;
   if (!name || !email) {
     return res.status(400).json({ success: false, error: 'Name and email are required' });
   }
@@ -27,6 +27,7 @@ function createVolunteer(req, res) {
     id: nextId(volunteers),
     name,
     email,
+    password,
     skills: skills || [],
     createdAt: new Date().toISOString(),
   };
@@ -56,10 +57,30 @@ function deleteVolunteer(req, res) {
   res.json({ success: true, data: null });
 }
 
+function login(req, res) {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: 'Email and password are required' });
+  }
+
+  const volunteers = readData(FILE);
+  const volunteer = volunteers.find(
+    (v) => v.email === email && v.password === password
+  );
+
+  if (!volunteer) {
+    return res.status(401).json({ success: false, error: 'Invalid email or password' });
+  }
+
+  res.json({ success: true, data: volunteer });
+}
+
 module.exports = {
   getAllVolunteers,
   getVolunteerById,
   createVolunteer,
   updateVolunteer,
   deleteVolunteer,
+  login,
 };

@@ -6,8 +6,10 @@ const {
   createVolunteer,
   updateVolunteer,
   deleteVolunteer,
+  login,
 } = require('../controllers/volunteerController');
 
+router.post('/login', login);
 router.get('/', getAllVolunteers);
 router.get('/:id', getVolunteerById);
 router.post('/', createVolunteer);
