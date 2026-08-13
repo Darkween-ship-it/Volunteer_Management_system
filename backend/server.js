@@ -8,6 +8,9 @@ app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 app.use('/api/volunteers', require('./routes/volunteerRoutes'));
 
+app.use('/api/participations', require('./routes/participationRoutes'));
+
+
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Route not found' });
 });
@@ -15,3 +18,4 @@ app.use((req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
