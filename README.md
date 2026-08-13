@@ -16,6 +16,70 @@ The goal of this project is to apply backend development concepts learned during
 - Managing application data
 - Collaborating using Git and GitHub
 
+## Getting Started
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+The server runs on `http://localhost:3000` and serves the frontend from the `frontend/` folder.
+
+## Project Structure
+
+```
+volunteer management/
+├── backend/              # Node.js + Express API
+│   ├── controllers/      # request-handling logic
+│   ├── routes/           # URL definitions
+│   ├── middleware/       # central error handling
+│   ├── utils/            # shared helpers (storage, id generation)
+│   ├── data/             # JSON file storage
+│   └── server.js         # entry point
+├── frontend/             # HTML/CSS/JS, served statically
+└── README.md
+```
+
+## API Endpoints
+
+Every response uses one of two shapes:
+
+```json
+{ "success": true, "data": ... }
+{ "success": false, "error": "message" }
+```
+
+### Volunteers (`/api/volunteers`)
+
+| Method | Endpoint | Description             | Body                           |
+|--------|----------|-------------------------|--------------------------------|
+| GET    | /        | List all volunteers     | -                              |
+| GET    | /:id     | Get one volunteer       | -                              |
+| POST   | /        | Create a volunteer      | name, email, password, skills  |
+| POST   | /login   | Sign in a volunteer     | email, password                |
+| PUT    | /:id     | Update a volunteer      | any fields                     |
+| DELETE | /:id     | Delete a volunteer      | -                              |
+
+### Participations (`/api/participations`)
+
+| Method | Endpoint | Description                        | Body                        |
+|--------|----------|------------------------------------|-----------------------------|
+| GET    | /        | List records (with names attached) | -                           |
+| POST   | /        | Create a participation record      | eventId, volunteerId, status |
+
+### Events (`/api/events`) — in progress
+
+| Method | Endpoint            | Description           |
+|--------|---------------------|-----------------------|
+| GET    | /                   | List all events       |
+| GET    | /:id                | Get one event         |
+| POST   | /                   | Create an event       |
+| PUT    | /:id                | Update an event       |
+| DELETE | /:id                | Delete an event       |
+| POST   | /:id/register       | Register a volunteer  |
+| GET    | /:id/participants   | List participants     |
+
 ## User Roles
 
 ### Volunteer

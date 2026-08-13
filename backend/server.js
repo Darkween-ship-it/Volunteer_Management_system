@@ -15,7 +15,11 @@ app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Route not found' });
 });
 
+app.use(require('./middleware/errorMiddleware'));
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
+
 
