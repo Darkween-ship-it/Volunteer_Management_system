@@ -31,11 +31,12 @@ The server runs on `http://localhost:3000` and serves the frontend from the `fro
 ```
 volunteer management/
 ├── backend/              # Node.js + Express API
-│   ├── controllers/      # request-handling logic
-│   ├── routes/           # URL definitions
-│   ├── middleware/       # central error handling
-│   ├── utils/            # shared helpers (storage, id generation)
-│   ├── data/             # JSON file storage
+│   ├── controllers/      # request-handling logic (volunteers, events, participations)
+│   ├── routes/           # URL definitions per resource
+│   ├── middleware/       # error handling + file uploads (multer)
+│   ├── utils/            # shared helpers (JSON storage, id generation)
+│   ├── data/             # JSON file storage (volunteers, events, participations)
+│   ├── uploads/          # uploaded images (profile pictures, event images)
 │   └── server.js         # entry point
 ├── frontend/             # HTML/CSS/JS, served statically
 └── README.md
@@ -50,16 +51,20 @@ Every response uses one of two shapes:
 { "success": false, "error": "message" }
 ```
 
+Requests that include a file (`profilePicture` or `image`) are sent as `multipart/form-data` (via an HTML file input or JavaScript `FormData`). All other requests are plain JSON.
+
 ### Volunteers (`/api/volunteers`)
 
-| Method | Endpoint | Description             | Body                           |
-|--------|----------|-------------------------|--------------------------------|
-| GET    | /        | List all volunteers     | -                              |
-| GET    | /:id     | Get one volunteer       | -                              |
-| POST   | /        | Create a volunteer      | name, email, password, skills  |
-| POST   | /login   | Sign in a volunteer     | email, password                |
-| PUT    | /:id     | Update a volunteer      | any fields                     |
-| DELETE | /:id     | Delete a volunteer      | -                              |
+| Method | Endpoint | Description             | Body                                                    |
+|--------|----------|-------------------------|---------------------------------------------------------|
+| GET    | /        | List all volunteers     | -                                                       |
+| GET    | /:id     | Get one volunteer       | -                                                       |
+| POST   | /        | Create a volunteer      | name, email, password, skills, profilePicture (file)    |
+| POST   | /login   | Sign in a volunteer     | email, password                                         |
+| PUT    | /:id     | Update a volunteer      | any fields, profilePicture (file)                       |
+| DELETE | /:id     | Delete a volunteer      | -                                                       |
+
+New volunteers start with `status: "pending"` until an admin changes it to `"approved"` or `"rejected"`.
 
 ### Participations (`/api/participations`)
 
@@ -68,17 +73,19 @@ Every response uses one of two shapes:
 | GET    | /        | List records (with names attached) | -                           |
 | POST   | /        | Create a participation record      | eventId, volunteerId, status |
 
-### Events (`/api/events`) — in progress
+### Events (`/api/events`)
 
-| Method | Endpoint            | Description           |
-|--------|---------------------|-----------------------|
-| GET    | /                   | List all events       |
-| GET    | /:id                | Get one event         |
-| POST   | /                   | Create an event       |
-| PUT    | /:id                | Update an event       |
-| DELETE | /:id                | Delete an event       |
-| POST   | /:id/register       | Register a volunteer  |
-| GET    | /:id/participants   | List participants     |
+| Method | Endpoint            | Description           | Body                                          |
+|--------|---------------------|-----------------------|-----------------------------------------------|
+| GET    | /                   | List all events       | -                                             |
+| GET    | /:id                | Get one event         | -                                             |
+| POST   | /                   | Create an event       | title, date, location, description, image (file) |
+| PUT    | /:id                | Update an event       | any fields, image (file)                      |
+| DELETE | /:id                | Delete an event       | -                                             |
+| POST   | /:id/register       | Register a volunteer  | volunteerId                                   |
+| GET    | /:id/participants   | List participants     | -                                             |
+
+Registering a volunteer adds them to the event's `participants` list. `GET /:id/participants` returns that list with each volunteer's name and email attached.
 
 ## User Roles
 

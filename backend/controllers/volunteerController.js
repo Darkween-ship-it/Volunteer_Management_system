@@ -29,6 +29,7 @@ function createVolunteer(req, res) {
     email,
     password,
     skills: skills || [],
+    profilePicture: req.file ? '/uploads/' + req.file.filename : null,
     createdAt: new Date().toISOString(),
     status: 'pending',
   };
@@ -43,7 +44,11 @@ function updateVolunteer(req, res) {
   if (index === -1) {
     return res.status(404).json({ success: false, error: 'Volunteer not found' });
   }
-  volunteers[index] = { ...volunteers[index], ...req.body };
+  volunteers[index] = {
+    ...volunteers[index],
+    ...req.body,
+    ...(req.file ? { profilePicture: '/uploads/' + req.file.filename } : {}),
+  };
   writeData(FILE, volunteers);
   res.json({ success: true, data: volunteers[index] });
 }

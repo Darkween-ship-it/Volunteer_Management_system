@@ -28,6 +28,7 @@
             <header class="topbar">
                 <h1 id="page-title">Dashboard</h1>
                 <span id="nav-greeting" class="greeting"></span>
+                <img id="nav-avatar" class="greeting-avatar hidden" alt="">
             </header>
 
             <div id="pending-banner" class="banner hidden">
@@ -110,6 +111,9 @@
                 <div class="card">
                     <h2>Edit Profile</h2>
                     <form id="profile-form" class="profile-form">
+                        <label>Profile picture</label>
+                        <div id="profile-picture-preview" class="avatar-preview"></div>
+                        <input id="p-picture" type="file" accept="image/*">
                         <label>Full name</label>
                         <input id="p-name" type="text" required>
                         <label>Skills (comma separated)</label>

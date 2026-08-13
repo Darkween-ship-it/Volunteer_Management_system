@@ -8,8 +8,8 @@ const api = {
     async post(url, body) {
         const res = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            headers: body instanceof FormData ? {} : { 'Content-Type': 'application/json' },
+            body: body instanceof FormData ? body : JSON.stringify(body),
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error || 'Request failed');
@@ -18,8 +18,8 @@ const api = {
     async put(url, body) {
         const res = await fetch(url, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            headers: body instanceof FormData ? {} : { 'Content-Type': 'application/json' },
+            body: body instanceof FormData ? body : JSON.stringify(body),
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error || 'Request failed');
@@ -127,7 +127,7 @@ async function loadVolunteers() {
             return `
             <tr>
                 <td>${v.id}</td>
-                <td>${escapeHtml(v.name)}</td>
+                <td>${v.profilePicture ? `<img class="thumb thumb-round" src="${escapeHtml(v.profilePicture)}" alt=""> ` : ''}${escapeHtml(v.name)}</td>
                 <td>${escapeHtml(v.email)}</td>
                 <td>${(v.skills || []).map(escapeHtml).join(', ') || '—'}</td>
                 <td>${status}</td>
@@ -211,24 +211,25 @@ async function deleteVolunteer(id) {
 async function loadEvents() {
     try {
         const events = await api.get('/api/events');
-        const tbody = document.getElementById('events-tbody');
+        const list = document.getElementById('events-list');
         if (!events.length) {
-            tbody.innerHTML = '<tr><td colspan="6" class="muted">No events yet.</td></tr>';
+            list.innerHTML = '<p class="muted">No events yet. Create one above.</p>';
             return;
         }
-        tbody.innerHTML = events.map((e) => `
-            <tr>
-                <td>${e.id}</td>
-                <td>${escapeHtml(e.title)}</td>
-                <td>${escapeHtml(e.date)}</td>
-                <td>${escapeHtml(e.location)}</td>
-                <td>${(e.participants || []).length}</td>
-                <td>
-                    <button class="btn btn-sm btn-view" onclick="viewParticipants(${e.id})">Participants</button>
-                    <button class="btn btn-sm btn-edit" onclick="openEventModal(${e.id})">Edit</button>
-                    <button class="btn btn-sm btn-del" onclick="deleteEvent(${e.id})">Delete</button>
-                </td>
-            </tr>
+        list.innerHTML = events.map((e) => `
+            <div class="event-banner">
+                ${e.image ? `<div class="event-banner-bg" style="background-image:url('${escapeHtml(e.image)}')"></div>` : ''}
+                <div class="event-banner-content">
+                    <h3>${escapeHtml(e.title)}</h3>
+                    <p class="event-banner-meta">${escapeHtml(e.date)} · ${escapeHtml(e.location)} · ${(e.participants || []).length} volunteer(s)</p>
+                    ${e.description ? `<p class="event-banner-desc">${escapeHtml(e.description)}</p>` : ''}
+                    <div class="event-banner-actions">
+                        <button class="btn btn-sm btn-view" onclick="viewParticipants(${e.id})">Participants</button>
+                        <button class="btn btn-sm btn-edit" onclick="openEventModal(${e.id})">Edit</button>
+                        <button class="btn btn-sm btn-del" onclick="deleteEvent(${e.id})">Delete</button>
+                    </div>
+                </div>
+            </div>
         `).join('');
     } catch (err) {
         toast(err.message, true);
@@ -236,9 +237,12 @@ async function loadEvents() {
 }
 
 async function openEventModal(id = null) {
-    let event = { title: '', date: '', location: '', description: '' };
+    let event = { title: '', date: '', location: '', description: '', image: null };
     if (id) event = await api.get(`/api/events/${id}`);
     openModal(id ? 'Edit Event' : 'Create Event', `
+        <label>Image (optional)</label>
+        ${event.image ? `<img class="thumb thumb-lg" src="${escapeHtml(event.image)}" alt=""><br>` : ''}
+        <input id="e-image" type="file" accept="image/*">
         <label>Title</label>
         <input id="e-title" value="${escapeHtml(event.title)}" placeholder="Event title">
         <label>Date</label>
@@ -252,13 +256,14 @@ async function openEventModal(id = null) {
 }
 
 async function saveEvent(id) {
-    const body = {
-        title: document.getElementById('e-title').value.trim(),
-        date: document.getElementById('e-date').value,
-        location: document.getElementById('e-location').value.trim(),
-        description: document.getElementById('e-description').value.trim(),
-    };
-    if (!body.title || !body.date) {
+    const body = new FormData();
+    body.append('title', document.getElementById('e-title').value.trim());
+    body.append('date', document.getElementById('e-date').value);
+    body.append('location', document.getElementById('e-location').value.trim());
+    body.append('description', document.getElementById('e-description').value.trim());
+    const file = document.getElementById('e-image').files[0];
+    if (file) body.append('image', file);
+    if (!body.get('title') || !body.get('date')) {
         toast('Title and date are required', true);
         return;
     }

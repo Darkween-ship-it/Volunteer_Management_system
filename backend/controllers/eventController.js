@@ -29,6 +29,7 @@ function createEvent(req, res) {
     date,
     location: location || 'TBD',                           // ← default values
     description: description || '',
+    image: req.file ? '/uploads/' + req.file.filename : null,
     participants: [],                                      // ← events hold a list of volunteers
     createdAt: new Date().toISOString(),
   };
@@ -43,7 +44,11 @@ function updateEvent(req, res) {
   if (index === -1) {
     return res.status(404).json({ success: false, error: 'Event not found' });
   }
-  events[index] = { ...events[index], ...req.body };
+  events[index] = {
+    ...events[index],
+    ...req.body,
+    ...(req.file ? { image: '/uploads/' + req.file.filename } : {}),
+  };
   writeData(FILE, events);
   res.json({ success: true, data: events[index] });
 }

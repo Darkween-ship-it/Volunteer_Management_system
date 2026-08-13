@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../middleware/upload');
 const {
   getAllEvents,
   getEventById,
@@ -14,8 +15,8 @@ router.get('/:id/participants', getEventParticipants);
 router.post('/:id/register', registerVolunteer);
 router.get('/', getAllEvents);
 router.get('/:id', getEventById);
-router.post('/', createEvent);
-router.put('/:id', updateEvent);
+router.post('/', upload.single('image'), createEvent);
+router.put('/:id', upload.single('image'), updateEvent);
 router.delete('/:id', deleteEvent);
 
 module.exports = router;

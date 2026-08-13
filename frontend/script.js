@@ -55,8 +55,8 @@ function applyAsVolunteer() {
 async function api(url, method, body) {
     const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        headers: body instanceof FormData ? {} : { 'Content-Type': 'application/json' },
+        body: body instanceof FormData ? body : JSON.stringify(body),
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Request failed');
@@ -80,14 +80,22 @@ document.getElementById('volunteer-signin').addEventListener('submit', async (e)
 document.getElementById('volunteer-signup').addEventListener('submit', async (e) => {
     e.preventDefault();
     const panel = document.getElementById('volunteer-form');
-    const name = panel.querySelector('#volunteer-signup input[type="text"]').value.trim();
-    const email = panel.querySelector('#volunteer-signup input[type="email"]').value.trim();
-    const password = panel.querySelector('#volunteer-signup input[type="password"]').value;
+    const form = document.getElementById('volunteer-signup');
+    const name = form.querySelector('input[type="text"]').value.trim();
+    const email = form.querySelector('input[type="email"]').value.trim();
+    const password = form.querySelector('input[type="password"]').value;
+    const file = form.querySelector('input[type="file"]').files[0];
+    const body = new FormData();
+    body.append('name', name);
+    body.append('email', email);
+    body.append('password', password);
+    if (file) body.append('profilePicture', file);
     try {
-        await api('/api/volunteers', 'POST', { name, email, password });
-        panel.querySelector('#volunteer-signup input[type="text"]').value = '';
-        panel.querySelector('#volunteer-signup input[type="email"]').value = '';
-        panel.querySelector('#volunteer-signup input[type="password"]').value = '';
+        await api('/api/volunteers', 'POST', body);
+        form.querySelector('input[type="text"]').value = '';
+        form.querySelector('input[type="email"]').value = '';
+        form.querySelector('input[type="password"]').value = '';
+        form.querySelector('input[type="file"]').value = '';
         showMessage(panel, 'Application submitted! An admin will review it before you can sign in.');
     } catch (err) {
         showMessage(panel, err.message, true);

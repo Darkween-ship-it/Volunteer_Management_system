@@ -417,3 +417,82 @@ body {
 .hidden {
     display: none !important;
 }
+
+.thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    vertical-align: middle;
+}
+
+.thumb-lg {
+    width: 120px;
+    height: 80px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.thumb-round {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+}
+
+.event-banner {
+    position: relative;
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(135deg, #2f6fed, #111418);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.event-banner-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.event-banner-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(17, 20, 24, 0.95) 0%, rgba(17, 20, 24, 0.25) 60%, rgba(17, 20, 24, 0.1) 100%);
+}
+
+.event-banner-content {
+    position: relative;
+    z-index: 1;
+    padding: 16px 20px;
+    width: 100%;
+}
+
+.event-banner-content h3 {
+    color: #f1f5f9;
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.event-banner-meta {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.event-banner-desc {
+    color: #cbd5e1;
+    font-size: 13px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-banner-actions .btn {
+    margin-right: 8px;
+}

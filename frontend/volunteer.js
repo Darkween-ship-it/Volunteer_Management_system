@@ -10,8 +10,8 @@ const api = {
     async post(url, body) {
         const res = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            headers: body instanceof FormData ? {} : { 'Content-Type': 'application/json' },
+            body: body instanceof FormData ? body : JSON.stringify(body),
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error || 'Request failed');
@@ -20,8 +20,8 @@ const api = {
     async put(url, body) {
         const res = await fetch(url, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            headers: body instanceof FormData ? {} : { 'Content-Type': 'application/json' },
+            body: body instanceof FormData ? body : JSON.stringify(body),
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error || 'Request failed');
@@ -86,6 +86,11 @@ async function init() {
     try {
         volunteer = await api.get(`/api/volunteers/${id}`);
         document.getElementById('nav-greeting').textContent = `Hi, ${volunteer.name}`;
+        if (volunteer.profilePicture) {
+            const avatar = document.getElementById('nav-avatar');
+            avatar.src = volunteer.profilePicture;
+            avatar.classList.remove('hidden');
+        }
         if (volunteer.status !== 'approved') {
             document.getElementById('pending-banner').classList.remove('hidden');
         }
@@ -167,6 +172,9 @@ function statusBadge(status) {
 function renderProfile() {
     document.getElementById('profile-info').innerHTML = `
         <div class="list-item">
+            <div class="info"><h4>Photo</h4><img class="avatar" src="${volunteer.profilePicture || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23ccc%22/%3E%3Ctext x=%2232%22 y=%2240%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22%23fff%22%3E${escapeHtml((volunteer.name || '?')[0].toUpperCase())}%3C/text%3E%3C/svg%3E'}" alt=""></div>
+        </div>
+        <div class="list-item">
             <div class="info"><h4>Name</h4><p>${escapeHtml(volunteer.name)}</p></div>
         </div>
         <div class="list-item">
@@ -182,22 +190,32 @@ function renderProfile() {
             <div class="info"><h4>Applied</h4><p>${new Date(volunteer.createdAt).toLocaleDateString()}</p></div>
         </div>
     `;
+    document.getElementById('profile-picture-preview').innerHTML = volunteer.profilePicture
+        ? `<img class="avatar" src="${escapeHtml(volunteer.profilePicture)}" alt="">`
+        : '<span class="muted">No photo yet.</span>';
     document.getElementById('p-name').value = volunteer.name;
     document.getElementById('p-skills').value = (volunteer.skills || []).join(', ');
 }
 
 document.getElementById('profile-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const body = {
-        name: document.getElementById('p-name').value.trim(),
-        skills: document.getElementById('p-skills').value.split(',').map((s) => s.trim()).filter(Boolean),
-    };
+    const body = new FormData();
+    body.append('name', document.getElementById('p-name').value.trim());
+    body.append('skills', document.getElementById('p-skills').value.split(',').map((s) => s.trim()).filter(Boolean));
     const password = document.getElementById('p-password').value;
-    if (password) body.password = password;
+    if (password) body.append('password', password);
+    const file = document.getElementById('p-picture').files[0];
+    if (file) body.append('profilePicture', file);
     try {
         volunteer = await api.put(`/api/volunteers/${volunteer.id}`, body);
         document.getElementById('nav-greeting').textContent = `Hi, ${volunteer.name}`;
+        if (volunteer.profilePicture) {
+            const avatar = document.getElementById('nav-avatar');
+            avatar.src = volunteer.profilePicture;
+            avatar.classList.remove('hidden');
+        }
         document.getElementById('p-password').value = '';
+        document.getElementById('p-picture').value = '';
         renderProfile();
         toast('Profile updated');
     } catch (err) {
@@ -223,6 +241,7 @@ async function renderEvents() {
             const disabled = volunteer.status !== 'approved';
             return `
                 <div class="event-card">
+                    ${e.image ? `<img class="event-img" src="${escapeHtml(e.image)}" alt="">` : ''}
                     <h3>${escapeHtml(e.title)}</h3>
                     <p class="meta">${escapeHtml(e.date)} · ${escapeHtml(e.location)}</p>
                     ${e.description ? `<p class="desc">${escapeHtml(e.description)}</p>` : ''}
