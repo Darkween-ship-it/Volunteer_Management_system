@@ -110,12 +110,14 @@ nav a:hover {
 }
 
 .btn-primary {
-    background: #2f6fed;
-    color: #ffffff;
+    
+    background: #cbd5e1;
+    color: black; 
 }
 
 .btn-primary:hover {
-    background: #2454c4;
+    background: #2f6fed;
+    color: #ffffff;  
 }
 
 .btn-block {
