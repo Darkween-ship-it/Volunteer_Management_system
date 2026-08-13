@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": 1,
+    "eventId": 1,
+    "volunteerId": 2,
+    "status": "absent",
+    "date": "2026-08-13T11:46:44.427Z"
+  }
+]
