@@ -9,6 +9,14 @@
       {
         "volunteerId": 2,
         "registeredAt": "2026-08-13T02:45:30.913Z"
+      },
+      {
+        "volunteerId": 4,
+        "registeredAt": "2026-08-20T11:16:43.110Z"
+      },
+      {
+        "volunteerId": 1,
+        "registeredAt": "2026-08-20T11:16:43.176Z"
       }
     ],
     "createdAt": "2026-08-13T01:50:43.615Z",
@@ -21,7 +29,16 @@
     "location": "Bamenda",
     "description": "",
     "image": "/uploads/1786614171058-356662620.jpg",
-    "participants": [],
+    "participants": [
+      {
+        "volunteerId": 4,
+        "registeredAt": "2026-08-20T11:16:43.244Z"
+      },
+      {
+        "volunteerId": 2,
+        "registeredAt": "2026-08-20T11:16:43.301Z"
+      }
+    ],
     "createdAt": "2026-08-13T09:42:51.062Z"
   }
 ]
