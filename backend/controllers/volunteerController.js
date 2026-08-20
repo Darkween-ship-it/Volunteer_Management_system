@@ -3,9 +3,14 @@ const { nextId } = require('../utils/idGenerator');
 
 const FILE = 'volunteers';
 
+function sanitize(volunteer) {
+  const { password, ...safe } = volunteer;
+  return safe;
+}
+
 function getAllVolunteers(req, res) {
   const volunteers = readData(FILE);
-  res.json({ success: true, data: volunteers });
+  res.json({ success: true, data: volunteers.map(sanitize) });
 }
 
 function getVolunteerById(req, res) {
@@ -14,7 +19,7 @@ function getVolunteerById(req, res) {
   if (!volunteer) {
     return res.status(404).json({ success: false, error: 'Volunteer not found' });
   }
-  res.json({ success: true, data: volunteer });
+  res.json({ success: true, data: sanitize(volunteer) });
 }
 
 function normalizeSkills(skills) {
@@ -25,8 +30,8 @@ function normalizeSkills(skills) {
 
 function createVolunteer(req, res) {
   const { name, email, skills, password } = req.body;
-  if (!name || !email) {
-    return res.status(400).json({ success: false, error: 'Name and email are required' });
+  if (!name || !email || !password) {
+    return res.status(400).json({ success: false, error: 'Name, email and password are required' });
   }
   const volunteers = readData(FILE);
   const newVolunteer = {
@@ -41,7 +46,7 @@ function createVolunteer(req, res) {
   };
   volunteers.push(newVolunteer);
   writeData(FILE, volunteers);
-  res.status(201).json({ success: true, data: newVolunteer });
+  res.status(201).json({ success: true, data: sanitize(newVolunteer) });
 }
 
 function updateVolunteer(req, res) {
@@ -57,7 +62,7 @@ function updateVolunteer(req, res) {
     ...(req.file ? { profilePicture: '/uploads/' + req.file.filename } : {}),
   };
   writeData(FILE, volunteers);
-  res.json({ success: true, data: volunteers[index] });
+  res.json({ success: true, data: sanitize(volunteers[index]) });
 }
 
 function deleteVolunteer(req, res) {
@@ -86,7 +91,11 @@ function login(req, res) {
     return res.status(401).json({ success: false, error: 'Invalid email or password' });
   }
 
-  res.json({ success: true, data: volunteer });
+  if (volunteer.status !== 'approved') {
+    return res.status(403).json({ success: false, error: 'Your account has not been approved yet' });
+  }
+
+  res.json({ success: true, data: sanitize(volunteer) });
 }
 
 module.exports = {
