@@ -4,18 +4,17 @@
     "name": "M Djot",
     "email": "hafidatchiegmou@gmail.com",
     "password": "demos",
-    "skills": [
-      "Good at talking bla bla bla"
-    ],
+    "skills": ["Good at talking bla bla bla"],
     "createdAt": "2026-08-13T01:46:40.899Z",
-    "status": "approved"
+    "status": "approved",
+    "profilePicture": "/uploads/1786624583262-959957752.jpg"
   },
   {
     "id": 2,
     "name": "elena",
     "email": "elenalyn@gmail.com",
     "password": "diso",
-    "skills": "",
+    "skills": [],
     "profilePicture": "/uploads/1786589425515-426194274.jpg",
     "createdAt": "2026-08-13T02:33:38.680Z",
     "status": "approved"

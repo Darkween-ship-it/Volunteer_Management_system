@@ -45,6 +45,12 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
+function skillsToList(skills) {
+    if (Array.isArray(skills)) return skills;
+    if (typeof skills === 'string' && skills.trim()) return [skills.trim()];
+    return [];
+}
+
 function logout() {
     localStorage.removeItem(VOLUNTEER_KEY);
     window.location.href = 'index.html';
@@ -184,7 +190,7 @@ function renderProfile() {
             <div class="info"><h4>Email</h4><p>${escapeHtml(volunteer.email)}</p></div>
         </div>
         <div class="list-item">
-            <div class="info"><h4>Skills</h4><p>${(volunteer.skills || []).map(escapeHtml).join(', ') || 'None added'}</p></div>
+            <div class="info"><h4>Skills</h4><p>${skillsToList(volunteer.skills).map(escapeHtml).join(', ') || 'None added'}</p></div>
         </div>
         <div class="list-item">
             <div class="info"><h4>Status</h4><p><span class="badge badge-${volunteer.status}">${escapeHtml(volunteer.status)}</span></p></div>
@@ -195,7 +201,7 @@ function renderProfile() {
     `;
     document.getElementById('profile-picture-preview').innerHTML = avatarHtml;
     document.getElementById('p-name').value = volunteer.name;
-    document.getElementById('p-skills').value = (volunteer.skills || []).join(', ');
+    document.getElementById('p-skills').value = skillsToList(volunteer.skills).join(', ');
 }
 
 document.getElementById('profile-form').addEventListener('submit', async (e) => {

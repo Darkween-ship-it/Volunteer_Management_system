@@ -77,6 +77,12 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
+function skillsToList(skills) {
+    if (Array.isArray(skills)) return skills;
+    if (typeof skills === 'string' && skills.trim()) return [skills.trim()];
+    return [];
+}
+
 async function loadView(view) {
     if (view === 'dashboard') loadDashboard();
     if (view === 'volunteers') loadVolunteers();
@@ -129,7 +135,7 @@ async function loadVolunteers() {
                 <td>${v.id}</td>
                 <td>${v.profilePicture ? `<img class="thumb thumb-round" src="${escapeHtml(v.profilePicture)}" alt=""> ` : ''}${escapeHtml(v.name)}</td>
                 <td>${escapeHtml(v.email)}</td>
-                <td>${(v.skills || []).map(escapeHtml).join(', ') || '—'}</td>
+                <td>${skillsToList(v.skills).map(escapeHtml).join(', ') || '—'}</td>
                 <td>${status}</td>
                 <td>${actions}
                     <button class="btn btn-sm btn-del" onclick="deleteVolunteer(${v.id})">Delete</button>
@@ -157,7 +163,7 @@ async function openVolunteerModal(id = null) {
     let volunteer = { name: '', email: '', skills: '' };
     if (id) {
         volunteer = await api.get(`/api/volunteers/${id}`);
-        volunteer.skills = (volunteer.skills || []).join(', ');
+        volunteer.skills = skillsToList(volunteer.skills).join(', ');
     }
     openModal(id ? 'Edit Volunteer' : 'Add Volunteer', `
         <label>Name</label>

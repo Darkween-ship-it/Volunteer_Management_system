@@ -17,6 +17,12 @@ function getVolunteerById(req, res) {
   res.json({ success: true, data: volunteer });
 }
 
+function normalizeSkills(skills) {
+  if (Array.isArray(skills)) return skills;
+  if (typeof skills === 'string' && skills.trim()) return skills.split(',').map((s) => s.trim()).filter(Boolean);
+  return [];
+}
+
 function createVolunteer(req, res) {
   const { name, email, skills, password } = req.body;
   if (!name || !email) {
@@ -28,7 +34,7 @@ function createVolunteer(req, res) {
     name,
     email,
     password,
-    skills: skills || [],
+    skills: normalizeSkills(skills),
     profilePicture: req.file ? '/uploads/' + req.file.filename : null,
     createdAt: new Date().toISOString(),
     status: 'pending',
@@ -47,6 +53,7 @@ function updateVolunteer(req, res) {
   volunteers[index] = {
     ...volunteers[index],
     ...req.body,
+    ...(req.body.skills !== undefined ? { skills: normalizeSkills(req.body.skills) } : {}),
     ...(req.file ? { profilePicture: '/uploads/' + req.file.filename } : {}),
   };
   writeData(FILE, volunteers);
