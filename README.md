@@ -169,7 +169,6 @@ Each team should submit:
 After learning databases, these projects can be improved by adding:
 
 - PostgreSQL or MongoDB integration
-- Real authentication
-- File uploads
-- Deployment
-- Advanced security features
+- JWT-based session tokens (current auth uses direct password matching)
+- Deployment (Render, Railway, etc.)
+- Advanced security features (rate limiting, input sanitization)
